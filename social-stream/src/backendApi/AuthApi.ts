@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 
 export interface RegisterPayload {
@@ -8,6 +8,7 @@ export interface RegisterPayload {
     firstName: string,
     lastName: string,
     dob: string,
+    image: File | null
 }
 export interface LoginPayload {
     email: string,
@@ -36,10 +37,6 @@ export default class AuthApi {
         })
     }
     loginUser(payload: LoginPayload) {
-        axios.post(`${this.baseUrl}${this.endpoint}/login`, payload).then((resp) => {
-            console.log(resp.data)
-        }).catch((e: AxiosError) => {
-            console.error(e.response)
-        })
+        return axios.post(`${this.baseUrl}${this.endpoint}/login`, payload, { withCredentials: true });
     }
 }

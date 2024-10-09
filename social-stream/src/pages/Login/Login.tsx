@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { BaseUrl } from "../../../config"
 import AuthApi from "../../backendApi/AuthApi";
 import { useState } from "react";
+import { AxiosError } from "axios";
 
 interface LoginData {
     email: string,
@@ -74,7 +75,11 @@ const LoginWithGoogleButton = () => {
                     <div className="mt-8">
                         <button className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600" onClick={() => {
                             console.log(formData)
-                            authApi.loginUser(formData)
+                            authApi.loginUser(formData).then((resp) => {
+                                console.log(resp)
+                            }).catch((e: AxiosError) => {
+                                console.log(e.status)
+                            })
                         }}>
                             Login
                         </button>

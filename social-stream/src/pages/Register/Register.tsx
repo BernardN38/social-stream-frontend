@@ -1,7 +1,8 @@
 import { useState } from "react";
-import AuthApi, { RegisterPayload } from "../../backendApi/AuthApi";
+import { RegisterPayload } from "../../backendApi/AuthApi";
 import { BaseUrl } from "../../../config";
 import { Link } from "react-router-dom";
+import MediaApi from "../../backendApi/MediaApi";
 
 const defaultData: RegisterPayload = {
     firstName: "",
@@ -9,12 +10,14 @@ const defaultData: RegisterPayload = {
     email: "",
     password: "",
     username: "",
-    dob: ""
+    dob: "",
+    image: null
 }
 const FormRegistration = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [formData, setFormData] = useState<RegisterPayload>(defaultData);
-    const authApi = new AuthApi(BaseUrl);
+    // const authApi = new AuthApi(BaseUrl);
+    const mediaApi = new MediaApi(BaseUrl)
     return (
         <div className="flex flex-col justify-center items-center w-full h-[100vh] bg-white px-5">
             <div className=" flex flex-col items-end justify-start  overflow-hidden mb-2 xl:max-w-3xl w-full">
@@ -49,6 +52,25 @@ const FormRegistration = () => {
                 <div className="w-full mt-8">
                     <div className="mx-auto max-w-xs sm:max-w-md md:max-w-lg flex flex-col gap-4">
                         <div className="flex flex-col sm:flex-row gap-3">
+                            <div className={`w-full items-center flex flex-col px-5 py-3 rounded-lg font-medium border-2 border-transparent
+                                 placeholder-gray-500 text-sm focus:outline-none  focus:border-2  focus:outline ${darkMode
+                                    ? "bg-[#302E30] text-white focus:border-white"
+                                    : "bg-gray-100 text-black focus:border-black"
+                                }`}>
+                                <label className="">Upload Profile Image</label>
+                                <input
+                                    type="file"
+                                    placeholder="Your first name"
+                                    name="image"
+                                    // value={formData.firstName}
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            image: e.currentTarget.files?.item(0) || null
+                                        })
+                                        console.log(formData)
+                                    }} />
+                            </div>
                             <input
                                 className={`w-full px-5 py-3 rounded-lg font-medium border-2 border-transparent placeholder-gray-500 text-sm focus:outline-none  focus:border-2  focus:outline ${darkMode
                                     ? "bg-[#302E30] text-white focus:border-white"
@@ -157,9 +179,13 @@ const FormRegistration = () => {
                         />
                         <button
                             onClick={() => {
-                                authApi.registerUser(formData)
+                                if (formData.image) {
+                                    mediaApi.uploadMedia(formData.image)
+                                }
+                                // authApi.registerUser(formData)
                             }}
-                            className="mt-5 tracking-wide font-semibold bg-[#E9522C] text-gray-100 w-full py-4 rounded-lg hover:bg-[#E9522C]/90 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                            // className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600" 
+                            className="mt-5 tracking-wide font-semibold bg-blue-700  text-gray-100 w-full py-4 rounded-lg hover:bg-[#E9522C]/90 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                             <svg
                                 className="w-6 h-6 -ml-2"
                                 fill="none"
